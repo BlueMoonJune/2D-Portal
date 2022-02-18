@@ -1,0 +1,88 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://src/resources/screen_uv.gdshader" type="Shader" id=1]
+[ext_resource path="res://src/resources/blue_portal.tres" type="SpriteFrames" id=2]
+[ext_resource path="res://src/scripts/Portal.gd" type="Script" id=3]
+[ext_resource path="res://src/scripts/RenderMainWorld.gd" type="Script" id=5]
+
+[sub_resource type="ShaderMaterial" id=10]
+shader = ExtResource( 1 )
+shader_param/offset = Vector2( 0, 0 )
+
+[sub_resource type="ViewportTexture" id=11]
+
+[sub_resource type="RayShape2D" id=14]
+length = 21.774
+
+[sub_resource type="RayShape2D" id=15]
+
+[sub_resource type="RectangleShape2D" id=13]
+extents = Vector2( 8, 8 )
+
+[node name="Portal" type="StaticBody2D"]
+collision_layer = 2
+collision_mask = 2
+script = ExtResource( 3 )
+targetpath = NodePath("Viewpoint")
+frames = ExtResource( 2 )
+
+[node name="Viewport" type="Viewport" parent="."]
+size = Vector2( 256, 150 )
+own_world = true
+script = ExtResource( 5 )
+
+[node name="Camera2D" type="Camera2D" parent="Viewport"]
+rotating = true
+current = true
+zoom = Vector2( 2, 2 )
+
+[node name="Viewpoint" type="Node2D" parent="."]
+
+[node name="Top" type="Node2D" parent="."]
+position = Vector2( 0, -8 )
+
+[node name="Bottom" type="Node2D" parent="."]
+position = Vector2( 0, 8 )
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+visible = false
+material = SubResource( 10 )
+z_index = 1
+antialiased = true
+texture = SubResource( 11 )
+polygon = PoolVector2Array( 0, -8, 0, 8, 0, 8008, 0, -8008 )
+uv = PoolVector2Array( -17, -23, -25, 14, 12, 13, 12, -26 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+z_index = 2
+playing = true
+
+[node name="Ceiling" type="CollisionShape2D" parent="."]
+position = Vector2( 0, -8 )
+shape = SubResource( 14 )
+disabled = true
+
+[node name="Floor" type="CollisionShape2D" parent="."]
+position = Vector2( 0, 8 )
+shape = SubResource( 15 )
+disabled = true
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource( 13 )
+
+[node name="FloorRay" type="RayCast2D" parent="."]
+position = Vector2( -16, 9 )
+enabled = true
+cast_to = Vector2( 16, 0 )
+
+[node name="CeilingRay" type="RayCast2D" parent="."]
+position = Vector2( -16, -9 )
+enabled = true
+cast_to = Vector2( 16, 0 )
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_Area2D_body_exited"]

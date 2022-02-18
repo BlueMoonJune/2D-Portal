@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://src/resources/player.tres" type="SpriteFrames" id=1]
+[ext_resource path="res://src/scripts/Player.gd" type="Script" id=2]
+
+[sub_resource type="CapsuleShape2D" id=1]
+radius = 4.0
+height = 6.0
+
+[node name="RigidBody2D" type="KinematicBody2D"]
+collision_layer = 3
+collision_mask = 3
+script = ExtResource( 2 )
+
+[node name="Player" type="AnimatedSprite" parent="."]
+light_mask = 0
+position = Vector2( 0, 4 )
+frames = ExtResource( 1 )
+animation = "crouch"
+playing = true
+offset = Vector2( 0, -12 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0, 1 )
+shape = SubResource( 1 )
